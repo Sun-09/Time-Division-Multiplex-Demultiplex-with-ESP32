@@ -1,5 +1,7 @@
 # ESP32 Audio System: TDM, Playback, and IR Control
 
+![Image](https://github.com/user-attachments/assets/f3c68c4a-eb75-4aaf-9b64-f792a2caa6d2)
+
 ## Overview
 
 This project is a complete ESP32-based audio system that:
