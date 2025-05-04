@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TDM Audio Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #0f0f2e, #1a1a3d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .loader {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000d1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeOut 2s ease 3s forwards;
+    }
+
+    .loader-text {
+      color: #00ffff;
+      font-size: 2em;
+      animation: type 2.5s steps(25, end), blink 1s step-end infinite;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #00ffff;
+    }
+
+    @keyframes type {
+      from { width: 0 }
+      to { width: 17ch }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    .container {
+      text-align: center;
+      color: #fff;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 40px;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff; }
+      to { text-shadow: 0 0 20px #0ff, 0 0 40px #0ff; }
+    }
+
+    .button {
+      background: linear-gradient(145deg, #00c6ff, #0072ff);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 40px;
+      margin: 15px;
+      font-size: 1.2em;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      box-shadow: 0 6px 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.6);
+    }
+
+    .glow-effect {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #00ffff; }
+      50% { box-shadow: 0 0 20px #00ffff; }
+      100% { box-shadow: 0 0 10px #00ffff; }
+    }
+
+    .active-button {
+      background: linear-gradient(145deg, #00ff99, #00cc66) !important;
+      box-shadow: 0 8px 20px rgba(0, 255, 150, 0.6) !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="loader-text">Initializing TDM Channels...</div>
+  </div>
+
+  <div class="container">
+    <h1>Time Division Multiplexing</h1>
+    <button class="button glow-effect" id="multiplexBtn" onclick="activate(this, 'Multiplexing in progress...')">Multiplex</button>
+    <button class="button glow-effect" id="demultiplexBtn" onclick="activate(this, 'Demultiplexing in progress...')">Demultiplex</button>
+    <button class="button glow-effect" id="playBtn" onclick="activate(this, 'Playing audio from microSD...')">Play Audio</button>
+  </div>
+
+  <script>
+    function activate(button, message) {
+      document.querySelectorAll('.button').forEach(btn => btn.classList.remove('active-button'));
+      button.classList.add('active-button');
+      alert(message);
+    }
+  </script>
+</body>
+</html>

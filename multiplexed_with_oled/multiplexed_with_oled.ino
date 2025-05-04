@@ -1,6 +1,13 @@
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+#define OLED_RESET    -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define SD_CS 5         // Chip select pin for SD card
 #define DAC_PIN 25      // DAC output pin (GPIO25 or GPIO26)
@@ -41,6 +48,14 @@ uint32_t totalSamples = 0;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("❌ OLED init failed");
+    while (true);
+  }
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+
+
   Serial.println("Initializing SD card...");
 
   if (!SD.begin(SD_CS)) {
@@ -48,6 +63,10 @@ void setup() {
     return;
   }
   Serial.println("SD card initialized.");
+  display.clearDisplay();
+  display.setCursor(0, 10);
+  display.setTextSize(1);
+  display.print("SD card initialized.");
 
   audio1 = SD.open("/audio1.wav");
   audio2 = SD.open("/audio2.wav");
@@ -57,6 +76,11 @@ void setup() {
     return;
   }
   Serial.println("Audio files opened successfully.");
+  delay(1000);
+  display.clearDisplay();
+  display.setCursor(0, 10);
+  display.setTextSize(1);
+  display.print("Audio files opened successfully.");
 
   // Skip WAV headers
   for (int i = 0; i < 44; i++) {
@@ -94,6 +118,15 @@ void loop() {
 
     if (bytesWritten % 1000 == 0) {
       float percentage = (bytesWritten * 100.0) / (totalSamples * 2);
+      if((bytesWritten / 1000) % 10 == 0){
+        display.clearDisplay();
+        display.setCursor(0, 10);
+        display.setTextSize(1);
+        display.print("Processing, Completed:");
+        display.setCursor(0, 25);
+        display.print(percentage);
+        display.display();
+      }
       Serial.printf("Processed %lu out of %lu (%.2f%%)\n", bytesWritten, totalSamples * 2, percentage);
     }
 
@@ -109,6 +142,11 @@ void loop() {
     writeWavHeader(tdmOutput, bytesWritten);
     tdmOutput.close();
     Serial.println("Output file saved successfully as /output.wav");
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.setTextSize(1);
+    display.print("Output file saved successfully as /tdm_output.wav");
+    display.display();
     while (true);
   }
 }

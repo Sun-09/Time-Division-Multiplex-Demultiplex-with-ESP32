@@ -1,6 +1,14 @@
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+#define OLED_RESET    -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define SD_CS 5
 
@@ -44,8 +52,20 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("❌ OLED init failed");
+    while (true);
+  }
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+
   if (!SD.begin(SD_CS)) {
     Serial.println("❌ SD Card init failed");
+    display.clearDisplay();
+    display.setCursor(0, 10);
+    display.setTextSize(1);
+    display.print("Playing:");
+    display.display();
     return;
   }
   Serial.println("✅ SD Card ready");
@@ -100,6 +120,16 @@ void setup() {
     if (processedSamples % 1000 == 0) {
       float percent = (processedSamples * 100.0) / totalSamples;
       Serial.printf("🔄 Processed %lu of %lu samples (%.1f%%)\n", processedSamples, totalSamples, percent);
+      if ((processedSamples / 1000) % 10 == 0) {
+        display.clearDisplay();
+        display.setCursor(0, 0);
+        display.setTextSize(1);
+        display.print("Processing, Completed:");
+        display.setCursor(0, 15);
+        display.print(percent);
+        display.display();
+      }
+      
     }
   }
 
@@ -115,6 +145,26 @@ void setup() {
 
   Serial.println("✅ Demux complete. Files saved as recovered1.wav and recovered2.wav");
   Serial.printf("⏱ Total time taken: %.2f seconds\n", seconds);
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.print("Demux complete. Files saved as recovered1.wav and recovered2.wav");
+  display.display();
+  delay(5000);
+  display.clearDisplay();
+  display.setCursor(0, 10);
+  display.print("Total time taken: ");
+  display.print(seconds, 2); // 2 decimal places
+  display.println(" seconds");
+
+  display.display();
+
+  delay(4000);
+  display.clearDisplay();
+  display.setCursor(30, 10);
+  display.print("THANK YOU ");
+
+  display.display();
 }
 
 void loop() {

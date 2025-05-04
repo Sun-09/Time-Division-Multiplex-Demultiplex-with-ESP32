@@ -54,12 +54,11 @@ void playCurrentFile() {
 
   Serial.print("▶️ Now Playing: ");
   Serial.println(fileList[currentIndex]);
-
   display.clearDisplay();
-  display.setCursor(0, 10);
+  display.setCursor(0, 0);
   display.setTextSize(1);
   display.print("Playing:");
-  display.setCursor(0, 25);
+  display.setCursor(0, 10);
   display.print(fileList[currentIndex]);
   display.display();
   
