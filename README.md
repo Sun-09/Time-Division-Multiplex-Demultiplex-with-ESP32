@@ -49,6 +49,9 @@ This project is a complete ESP32-based audio system that:
 
 ---
 
+## **Website UI**
+![Image](https://github.com/user-attachments/assets/50be60ed-fd02-4c43-9185-56430883aef4)
+
 ## Required Hardware
 
 - **ESP32 Dev Module**
