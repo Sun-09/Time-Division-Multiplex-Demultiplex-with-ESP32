@@ -1,6 +1,11 @@
 # 🎧 Time Division Multiplexing and Demultiplexing of Audio using ESP32
 
+
+
 A final year engineering project that implements **Time Division Multiplexing (TDM)** and **Demultiplexing** of two `.wav` audio files using the **ESP32 Dev Module**, with real-time playback through its internal **DAC**, command control via **MQTT**, and a visual interface on an **OLED display**.
+
+
+![Image](https://github.com/user-attachments/assets/61bb462b-f707-4c99-a437-53a93f83328a)
 
 ---
 
@@ -50,8 +55,9 @@ To demonstrate digital multiplexing principles in embedded systems by building a
 
 ---
 
-## 📂 Folder Structure
+## Website UI
 
+![Image](https://github.com/user-attachments/assets/50be60ed-fd02-4c43-9185-56430883aef4)
 
 ---
 
@@ -76,6 +82,10 @@ To demonstrate digital multiplexing principles in embedded systems by building a
 - Timing delays match sample rate to preserve audio speed
 
 ---
+
+## HOW MQTT Works
+
+![Image](https://github.com/user-attachments/assets/a36686f1-be98-4317-abad-cad040f59722)
 
 ## 🛰️ MQTT Control
 
