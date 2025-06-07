@@ -1,4 +1,4 @@
-# ESP32 Audio System: TDM, Playback, and IR Control
+# ESP32 Audio System: TDM, Playback, and MQTT Control
 
 ![Image](https://github.com/user-attachments/assets/f3c68c4a-eb75-4aaf-9b64-f792a2caa6d2)
 
@@ -12,7 +12,7 @@ This project is a complete ESP32-based audio system that:
 - Includes:
   - OLED display support
   - Physical push buttons for control
-  - **IR Remote** for wireless song selection and pause/resume
+  - **MQTT Control** :- Action of the MQTT Can be controlled wirelessly from laptop, mobile with the help of Internet from a website. 
   - (Optional) DIP switch input system for random song access
 
 ---
@@ -27,24 +27,24 @@ This project is a complete ESP32-based audio system that:
 ### 2. **Audio Playback**
 - DAC (GPIO25) outputs 8-bit WAV data at 44.1kHz
 - Skips 44-byte WAV headers
-- Auto-plays songs from SD card
-- OLED displays current song title
+- Auto-plays songs from the SD card
+- OLED displays the current song title
 
 ### 3. **Push Button Control**
 - GPIO32: Next Song
 - GPIO33: Previous Song
 - Allows physical interaction without needing a screen
 
-### 4. **IR Remote Integration**
-- Uses standard IR remotes
-- Supports:
-  - Song index selection (e.g., 0–9 keys)
-  - Pause/Resume toggle
-- IR decoding using `IRremote` library
+### 4. **MQTT Control**
+- Uses MQTT Protocol...
+- There is a website for user access.
+- Website UI has four buttons - Multiplex, Demultiplex, Play Audio & void (unnecessary button).
+- Whenever the User presses the Multiplex button, a message is sent to the Microcontroller(ESP32) that triggers the Multiplex action.
+- Same for Demultiplex and playing audio ( for listening to the output - the multiplexed and recovered signals).
 
-### 5. **DIP Switch Song Selection (Optional)**
+### 5. **DIP Switch Song Selection (Optional)(Not Included Yet)**
 - 8 DIP switches connected to GPIOs
-- One "enable" pin decides if DIP input is read
+- One "enable" pin decides if the DIP input is read
 - Converts binary input to song index and plays it
 
 ---
@@ -55,11 +55,11 @@ This project is a complete ESP32-based audio system that:
 - **MicroSD Card module**
 - **Speaker** (with external amplifier)
 - **2 Push Buttons**
-- **IR Receiver module** (e.g., TSOP1838)
 - **OLED Display (128x32 or 128x64)**
 - (Optional) **DIP Switch Array**
 
 ---
+
 
 ## Dependencies
 
@@ -70,3 +70,5 @@ This project is a complete ESP32-based audio system that:
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <IRremote.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
