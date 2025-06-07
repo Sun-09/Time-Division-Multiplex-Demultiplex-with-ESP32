@@ -1,72 +1,141 @@
-# ESP32 Audio System: TDM, Playback, and IR Control
+# 🎧 Time Division Multiplexing and Demultiplexing of Audio using ESP32
 
-![Image](https://github.com/user-attachments/assets/f3c68c4a-eb75-4aaf-9b64-f792a2caa6d2)
 
-## Overview
 
-This project is a complete ESP32-based audio system that:
+A final year engineering project that implements **Time Division Multiplexing (TDM)** and **Demultiplexing** of two `.wav` audio files using the **ESP32 Dev Module**, with real-time playback through its internal **DAC**, command control via **MQTT**, and a visual interface on an **OLED display**.
 
-- **Reads multiple audio files** from an SD card
-- **Performs Time Division Multiplexing (TDM)** to combine audio
-- **Demultiplexes and plays audio** using DAC output
-- Includes:
-  - OLED display support
-  - Physical push buttons for control
-  - **IR Remote** for wireless song selection and pause/resume
-  - (Optional) DIP switch input system for random song access
+
+![Image](https://github.com/user-attachments/assets/61bb462b-f707-4c99-a437-53a93f83328a)
 
 ---
 
-## Features
+## 📌 Features
 
-### 1. **TDM & Demultiplexing**
-- Two WAV files (`audio1.wav` and `audio2.wav`) are read from SD card
-- Interleaved into a new `output.wav` via TDM (byte-by-byte)
-- Can be demultiplexed and written back as individual files
-
-### 2. **Audio Playback**
-- DAC (GPIO25) outputs 8-bit WAV data at 44.1kHz
-- Skips 44-byte WAV headers
-- Auto-plays songs from SD card
-- OLED displays current song title
-
-### 3. **Push Button Control**
-- GPIO32: Next Song
-- GPIO33: Previous Song
-- Allows physical interaction without needing a screen
-
-### 4. **IR Remote Integration**
-- Uses standard IR remotes
-- Supports:
-  - Song index selection (e.g., 0–9 keys)
-  - Pause/Resume toggle
-- IR decoding using `IRremote` library
-
-### 5. **DIP Switch Song Selection (Optional)**
-- 8 DIP switches connected to GPIOs
-- One "enable" pin decides if DIP input is read
-- Converts binary input to song index and plays it
+- 🔁 Time Division Multiplexing of two `.wav` audio files from SD card
+- 🔃 Demultiplexing and separate playback of audio channels
+- 🎚 Playback via **ESP32 DAC** in real-time
+- 🗂 WAV file read/write with proper header handling
+- 🌐 MQTT command support (via **HiveMQ broker**)
+- 🖥 OLED display for system state updates
+- 🎮 Navigation buttons for manual control
 
 ---
 
-## Required Hardware
+## 🎯 Objective
 
-- **ESP32 Dev Module**
-- **MicroSD Card module**
-- **Speaker** (with external amplifier)
-- **2 Push Buttons**
-- **IR Receiver module** (e.g., TSOP1838)
-- **OLED Display (128x32 or 128x64)**
-- (Optional) **DIP Switch Array**
+To demonstrate digital multiplexing principles in embedded systems by building a working prototype that can:
+- Read two audio files
+- Interleave samples in time domain (TDM)
+- Write and store the combined result
+- Separate the interleaved data (Demux)
+- Play output using ESP32 DAC
 
 ---
 
-## Dependencies
+## 🛠️ Hardware Requirements
 
-```cpp
-#include <FS.h>
-#include <SD.h>
-#include <SPI.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#include <IRremote.h>
+| Component          | Description                     |
+|-------------------|---------------------------------|
+| ESP32 Dev Module  | Core microcontroller             |
+| MicroSD Module    | For reading/writing WAV files    |
+| 0.96" OLED (I2C)  | For displaying system status     |
+| Push Buttons (3x) | For playback control/navigation  |
+| 3.5mm Audio Jack  | For output via DAC               |
+| Resistors/Wires   | Basic components for connections |
+
+---
+
+## 🧱 Software Stack
+
+- PlatformIO / Arduino IDE
+- ESP32 Arduino Core
+- PubSubClient (MQTT)
+- Adafruit SSD1306 / GFX (OLED)
+- SD / SPI libraries for file I/O
+
+---
+
+## Website UI
+
+![Image](https://github.com/user-attachments/assets/50be60ed-fd02-4c43-9185-56430883aef4)
+
+---
+
+## ⚙️ Functionality Overview
+
+### 🔄 Multiplexing
+
+- Reads equal-length samples from `audio1.wav` and `audio2.wav`
+- Alternates sample-by-sample to create a new `.wav` file (`tdm.wav`)
+- Preserves WAV header with adjusted chunk size
+
+### 🔁 Demultiplexing
+
+- Reads interleaved `tdm.wav` file
+- Separates into `output1.wav` and `output2.wav`
+- Reconstructs original files accurately
+
+### ▶️ Playback
+
+- Plays selected file (`audio1.wav`, `audio2.wav`, or `tdm.wav`)
+- Uses `DAC1 (GPIO25)` for analog output
+- Timing delays match sample rate to preserve audio speed
+
+---
+
+## HOW MQTT Works
+
+![Image](https://github.com/user-attachments/assets/a36686f1-be98-4317-abad-cad040f59722)
+
+## 🛰️ MQTT Control
+
+- Uses public broker: **HiveMQ**
+- Topic subscribed: `sonu`
+- Commands:
+  - `"P"` = Play `audio1.wav`
+  - `"Q"` = Play `audio2.wav`
+  - `"R"` = Play `tdm.wav`
+  - `"M"` = Start multiplexing
+  - `"D"` = Start demultiplexing
+
+Example Publisher (from web):
+```js
+client.publish("sonu", "M"); 
+```
+
+## 🖥 OLED Display Messages
+
+"MULTIPLEXING" – When TDM starts
+
+"DEMULTIPLEXING" – During separation
+
+"PLAYING FILE" – During playback
+
+"MQTT CONNECTED" – On broker connect
+
+## 🧪 Testing Procedure
+
+Load .wav files into SD card.
+
+Power ESP32 and ensure OLED initializes.
+
+Send MQTT command from HiveMQ test client.
+
+Observe action on OLED and listen to output.
+
+Validate tdm.wav, output1.wav, and output2.wav from SD.
+
+## 🚀 Future Enhancements
+
+📶 Add Web UI for file selection and control
+
+🎵 Support more than two audio streams
+
+🔊 Use external DAC for higher-quality playback
+
+🔋 Add sleep/power-saving mode
+
+📁 FAT filesystem error handling and logging
+
+
+
