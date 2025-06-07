@@ -2,7 +2,7 @@
 
 
 
-A final year engineering project that implements **Time Division Multiplexing (TDM)** and **Demultiplexing** of two `.wav` audio files using the **ESP32 Dev Module**, with real-time playback through its internal **DAC**, command control via **MQTT**, and a visual interface on an **OLED display**.
+A part of final year engineering project that implements **Time Division Multiplexing (TDM)** and **Demultiplexing** of two `.wav` audio files using the **ESP32 Dev Module**, with real-time playback through its internal **DAC**, command control via **MQTT**, and a visual interface on an **OLED display**.
 
 
 ![Image](https://github.com/user-attachments/assets/61bb462b-f707-4c99-a437-53a93f83328a)
