@@ -6,7 +6,11 @@ const mqtt = require("mqtt");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 
 const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 const host = 'mqtt://broker.hivemq.com'
