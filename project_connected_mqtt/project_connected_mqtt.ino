@@ -17,7 +17,7 @@ bool actionTriggered = false;
 
 #define SD_CS 5
 #define DAC_PIN 25
-const uint32_t SAMPLE_RATE = 44100;
+const uint32_t SAMPLE_RATE = 48000;
 #define NEXT_BUTTON 32     // GPIO for Next
 #define PREV_BUTTON 33      // GPIO for previous
 
@@ -161,14 +161,14 @@ void multiplex(){
   for (int i = 0; i < 44; i++) { audio1.read(); audio2.read(); }
 
   uint32_t totalSamples = min(audio1.size(), audio2.size()) - 44;
-  tdmOutput = SD.open("/tdm_output.wav", FILE_WRITE);
+  tdmOutput = SD.open("/tdm_output_48000.wav", FILE_WRITE);
   for (int i = 0; i < 44; i++) tdmOutput.write((uint8_t)0);
   uint32_t bytesWritten = 0;
 
   while (audio1.available() && audio2.available()) {
     uint8_t s1 = audio1.read(), s2 = audio2.read();
-    dacWrite(DAC_PIN, s1); delayMicroseconds(11);
-    dacWrite(DAC_PIN, s2); delayMicroseconds(11);
+    dacWrite(DAC_PIN, s1); delayMicroseconds(10.41);
+    dacWrite(DAC_PIN, s2); delayMicroseconds(10.41);
     tdmOutput.write(s1); tdmOutput.write(s2);
     bytesWritten += 2;
     if (bytesWritten % 1000 == 0) {
@@ -194,10 +194,10 @@ void multiplex(){
 
 void demultiplex(){
 // Demultiplexing
-  inputFile = SD.open("/tdm_output.wav");
+  inputFile = SD.open("/tdm_output_48000.wav");
   inputFile.seek(44);
-  audio1File = SD.open("/recovered1.wav", FILE_WRITE);
-  audio2File = SD.open("/recovered2.wav", FILE_WRITE);
+  audio1File = SD.open("/recovered1_48000.wav", FILE_WRITE);
+  audio2File = SD.open("/recovered2_48000.wav", FILE_WRITE);
   for (int i = 0; i < 44; i++) { audio1File.write((uint8_t)0); audio2File.write((uint8_t)0); }
   uint32_t count1 = 0, count2 = 0; bool toggle = true;
   uint32_t processedSamples = 0;
@@ -234,7 +234,7 @@ void demultiplex(){
 }
 
 
-void playing_audio(){
+void playing_audio(){    // plays audio
   pinMode(NEXT_BUTTON, INPUT_PULLUP);
   pinMode(PREV_BUTTON, INPUT_PULLUP);
 
